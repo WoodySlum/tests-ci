@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "hello-world-ci"
+version = "0.1.0"
+description = "A simple project to test CI/CD"
+authors = ["Your Name <you@example.com>"]
+packages = [{include = "main.py"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0.0"
+black = "^24.0"
+pylint = "^3.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

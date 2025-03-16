@@ -1,0 +1,38 @@
+stages:
+  - lint
+  - test
+  - build
+  - deploy
+
+lint:
+  stage: lint
+  image: python:3.10
+  script:
+    - pip install poetry
+    - poetry install
+    - poetry run black --check .
+    - poetry run pylint main.py
+
+test:
+  stage: test
+  image: python:3.10
+  script:
+    - pip install poetry
+    - poetry install
+    - poetry run pytest
+
+build:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker build -t my-private-repo/hello-world-ci:latest .
+
+deploy:
+  stage: deploy
+  image: docker:latest
+  script:
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - docker push my-private-repo/hello-world-ci:latest
+

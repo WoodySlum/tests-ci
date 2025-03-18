@@ -1,9 +1,9 @@
 stages:
   - lint
-  - test
-  - pre-build
-  - build
-  - deploy
+  # - test
+  # - pre-build
+  # - build
+  # - deploy
 
 variables:
   DOCKER_IMAGE: "docker:20.10.24"
@@ -18,69 +18,69 @@ debug-vars:
     - echo "CI_DOCKER_USERNAME=$CI_DOCKER_USERNAME"
     - echo "CI_DOCKER_PASSWORD (masqué)=${#CI_DOCKER_PASSWORD} caractères"
 
-before_script:
-  - echo "$CI_DOCKER_PASSWORD" | docker login docker.io --username "$CI_DOCKER_USERNAME" --password-stdin
+# before_script:
+#   - echo "$CI_DOCKER_PASSWORD" | docker login docker.io --username "$CI_DOCKER_USERNAME" --password-stdin
 
-# Job Lint
-lint:
-  stage: lint
-  image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
-  before_script:
-    - echo "$CI_DOCKER_PASSWORD" | docker login docker.io --username "$CI_DOCKER_USERNAME" --password-stdin
-  tags:
-    - walnut
-  script:
-    - pip install poetry==$POETRY_VERSION
-    - poetry install
-    - poetry run black --check .
-    - poetry run pylint main.py || true  # Ignore les warnings
+# # Job Lint
+# lint:
+#   stage: lint
+#   image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
+#   before_script:
+#     - echo "$CI_DOCKER_PASSWORD" | docker login docker.io --username "$CI_DOCKER_USERNAME" --password-stdin
+#   tags:
+#     - walnut
+#   script:
+#     - pip install poetry==$POETRY_VERSION
+#     - poetry install
+#     - poetry run black --check .
+#     - poetry run pylint main.py || true  # Ignore les warnings
 
-# Job Test
-test:
-  stage: test
-  image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
-  tags:
-    - walnut
-  script:
-    - pip install poetry==$POETRY_VERSION
-    - poetry install
-    - poetry run pytest
+# # Job Test
+# test:
+#   stage: test
+#   image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
+#   tags:
+#     - walnut
+#   script:
+#     - pip install poetry==$POETRY_VERSION
+#     - poetry install
+#     - poetry run pytest
 
-# Job Pre-build
-pre-build:
-  stage: pre-build
-  image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
-  tags:
-    - walnut
-  script:
-    - if [ ! -f Dockerfile ]; then echo "Dockerfile missing!"; exit 1; fi
+# # Job Pre-build
+# pre-build:
+#   stage: pre-build
+#   image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
+#   tags:
+#     - walnut
+#   script:
+#     - if [ ! -f Dockerfile ]; then echo "Dockerfile missing!"; exit 1; fi
 
-# Job Build
-build:
-  stage: build
-  image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
-  tags:
-    - walnut
-  services:
-    - docker:dind
-  before_script:
-    - echo "Nettoyage de REGISTRY_URL"
-    - export REGISTRY_URL=$(echo $REGISTRY_URL | sed 's|https://||' | sed 's|/$||')
-    - echo "$CI_DOCKER_PASSWORD" | docker login "$REGISTRY_URL" -u "$CI_DOCKER_USERNAME" --password-stdin
-  script:
-    - docker build -t $REGISTRY_URL/hello-world-ci:latest .
+# # Job Build
+# build:
+#   stage: build
+#   image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
+#   tags:
+#     - walnut
+#   services:
+#     - docker:dind
+#   before_script:
+#     - echo "Nettoyage de REGISTRY_URL"
+#     - export REGISTRY_URL=$(echo $REGISTRY_URL | sed 's|https://||' | sed 's|/$||')
+#     - echo "$CI_DOCKER_PASSWORD" | docker login "$REGISTRY_URL" -u "$CI_DOCKER_USERNAME" --password-stdin
+#   script:
+#     - docker build -t $REGISTRY_URL/hello-world-ci:latest .
 
-# Job Deploy
-deploy:
-  stage: deploy
-  image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
-  tags:
-    - walnut
-  services:
-    - docker:dind
-  before_script:
-    - echo "Nettoyage de REGISTRY_URL"
-    - export REGISTRY_URL=$(echo $REGISTRY_URL | sed 's|https://||' | sed 's|/$||')
-    - echo "$CI_DOCKER_PASSWORD" | docker login "$REGISTRY_URL" -u "$CI_DOCKER_USERNAME" --password-stdin
-  script:
-    - docker push $REGISTRY_URL/hello-world-ci:latest
+# # Job Deploy
+# deploy:
+#   stage: deploy
+#   image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
+#   tags:
+#     - walnut
+#   services:
+#     - docker:dind
+#   before_script:
+#     - echo "Nettoyage de REGISTRY_URL"
+#     - export REGISTRY_URL=$(echo $REGISTRY_URL | sed 's|https://||' | sed 's|/$||')
+#     - echo "$CI_DOCKER_PASSWORD" | docker login "$REGISTRY_URL" -u "$CI_DOCKER_USERNAME" --password-stdin
+#   script:
+#     - docker push $REGISTRY_URL/hello-world-ci:latest

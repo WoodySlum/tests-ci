@@ -36,10 +36,6 @@ pre-build:
   image: alpine
   tags:
     - walnut
-  before_script:
-    - echo "Nettoyage de REGISTRY_URL"
-    - export REGISTRY_URL=$(echo $REGISTRY_URL | sed 's|https://||' | sed 's|/$||')
-    - echo "$REGISTRY_PASSWORD" | docker login "$REGISTRY_URL" -u "$REGISTRY_LOGIN" --password-stdin  # Ajout de l'authentification
   script:
     - if [ ! -f Dockerfile ]; then echo "Dockerfile missing!"; exit 1; fi
 

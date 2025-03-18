@@ -14,8 +14,7 @@ debug-vars:
   tags:
     - walnut
   script:
-    - echo "CI_DOCKER_USERNAME=$CI_DOCKER_USERNAME"
-    - echo "CI_DOCKER_PASSWORD (masqué)=${#CI_DOCKER_PASSWORD} caractères"
+    - env | grep CI_
 
 # before_script:
 #   - echo "$CI_DOCKER_PASSWORD" | docker login docker.io --username "$CI_DOCKER_USERNAME" --password-stdin

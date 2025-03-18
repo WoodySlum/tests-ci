@@ -43,7 +43,7 @@ jobs:
           fi
 
       - name: Sanitize REGISTRY_URL
-        run: echo "REGISTRY_URL=$(echo ${{ secrets.REGISTRY_URL }} | sed 's|https://||')" >> $GITHUB_ENV
+        run: echo "REGISTRY_URL=$(echo ${{ secrets.REGISTRY_URL }} | sed 's|/$||')" >> $GITHUB_ENV
 
       - name: Build Docker image
         run: docker build -t ${{ env.REGISTRY_URL }}/hello-world-ci:latest .

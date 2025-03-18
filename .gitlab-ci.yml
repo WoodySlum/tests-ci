@@ -10,7 +10,7 @@ variables:
   POETRY_VERSION: 1.8.2  # Remplace par la version correcte
 
 before_script:
-  - echo "$CI_DOCKER_PASSWORD" | docker login docker.io -u "$CI_DOCKER_USERNAME" --password-stdin
+  - echo "$CI_DOCKER_PASSWORD" | docker login docker.io --username "$CI_DOCKER_USERNAME" --password-stdin
 
 # Job Lint
 lint:

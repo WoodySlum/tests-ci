@@ -30,7 +30,7 @@ jobs:
         run: poetry run black --check .
 
       - name: Run Pylint
-        run: poetry run pylint src/ || true  # Ne bloque pas la CI en cas d'avertissements
+        run: poetry run pylint src/ || true
 
       - name: Run tests
         run: poetry run pytest
@@ -42,11 +42,14 @@ jobs:
             exit 1
           fi
 
+      - name: Sanitize REGISTRY_URL
+        run: echo "REGISTRY_URL=$(echo ${{ secrets.REGISTRY_URL }} | sed 's|https://||')" >> $GITHUB_ENV
+
       - name: Build Docker image
-        run: docker build -t ${{ secrets.REGISTRY_URL }}/hello-world-ci:latest .
+        run: docker build -t ${{ env.REGISTRY_URL }}/hello-world-ci:latest .
 
       - name: Login to Docker registry
-        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ secrets.REGISTRY_URL }} -u "${{ secrets.REGISTRY_LOGIN }}" --password-stdin
+        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login ${{ env.REGISTRY_URL }} -u "${{ secrets.REGISTRY_LOGIN }}" --password-stdin
 
       - name: Push Docker image
-        run: docker push ${{ secrets.REGISTRY_URL }}/hello-world-ci:latest
+        run: docker push ${{ env.REGISTRY_URL }}/hello-world-ci:latest

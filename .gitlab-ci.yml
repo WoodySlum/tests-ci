@@ -18,8 +18,8 @@ lint:
     - walnut
   before_script:
     # Authentification Docker
-    - echo "$DOCKER_USERNAME
-    - echo "$DOCKER_PASSWORD
+    - echo "$DOCKER_USERNAME"
+    - echo "$DOCKER_PASSWORD"
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   script:
     - pip install poetry==$POETRY_VERSION

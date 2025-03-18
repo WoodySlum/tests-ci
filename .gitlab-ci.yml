@@ -11,7 +11,7 @@ variables:
 
 debug-vars:
   stage: lint
-  image: alpine
+  image: docker:24.0.7
   tags:
     - walnut
   script:

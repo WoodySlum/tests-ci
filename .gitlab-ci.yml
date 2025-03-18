@@ -16,6 +16,8 @@ before_script:
 lint:
   stage: lint
   image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
+  before_script:
+    - echo "$CI_DOCKER_PASSWORD" | docker login docker.io --username "$CI_DOCKER_USERNAME" --password-stdin
   tags:
     - walnut
   script:

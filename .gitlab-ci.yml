@@ -13,7 +13,7 @@ variables:
 # Job Lint
 lint:
   stage: lint
-  image: python:3.10
+  image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
   tags:
     - walnut
   before_script:
@@ -28,7 +28,7 @@ lint:
 # Job Test
 test:
   stage: test
-  image: python:3.10
+  image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
   tags:
     - walnut
   before_script:
@@ -42,7 +42,7 @@ test:
 # Job Pre-build
 pre-build:
   stage: pre-build
-  image: alpine
+  image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
   tags:
     - walnut
   before_script:
@@ -54,7 +54,7 @@ pre-build:
 # Job Build
 build:
   stage: build
-  image: docker:latest
+  image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
   tags:
     - walnut
   services:
@@ -69,7 +69,7 @@ build:
 # Job Deploy
 deploy:
   stage: deploy
-  image: docker:latest
+  image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
   tags:
     - walnut
   services:

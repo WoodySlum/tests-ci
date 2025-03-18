@@ -7,8 +7,6 @@ stages:
 
 variables:
   POETRY_VERSION: 1.8.2  # Remplace par la version correcte
-  REGISTRY_URL: ${CI_REGISTRY}  # Utilise le registry GitLab CI/CD
-  IMAGE_NAME: "$REGISTRY_URL/hello-world-ci"
 
 # Job Lint
 lint:

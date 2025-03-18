@@ -12,6 +12,8 @@ variables:
 debug-vars:
   stage: lint
   image: alpine
+  tags:
+    - walnut
   script:
     - echo "CI_DOCKER_USERNAME=$CI_DOCKER_USERNAME"
     - echo "CI_DOCKER_PASSWORD (masqué)=${#CI_DOCKER_PASSWORD} caractères"

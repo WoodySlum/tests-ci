@@ -1,14 +1,16 @@
 stages:
   - lint
   - test
-  - pre-build
   - build
   - deploy
 
 variables:
-  POETRY_VERSION: 1.8.2  # Remplace par la version correcte
-  REGISTRY_URL: ${CI_REGISTRY}  # Utilise le registry GitLab CI/CD
-  IMAGE_NAME: "$REGISTRY_URL/hello-world-ci"
+  REGISTRY_URL: "$CI_REGISTRY"
+  IMAGE_NAME: "$CI_REGISTRY/hello-world-ci"
+
+before_script:
+  - apt-get update && apt-get install -y curl
+  - pip install poetry
 
 lint:
   stage: lint
@@ -16,10 +18,9 @@ lint:
   tags:
     - walnut
   script:
-    - pip install poetry==$POETRY_VERSION
     - poetry install
     - poetry run black --check .
-    - poetry run pylint main.py || true  # Ignore les warnings
+    - poetry run pylint src/ || true
 
 test:
   stage: test
@@ -27,17 +28,8 @@ test:
   tags:
     - walnut
   script:
-    - pip install poetry==$POETRY_VERSION
     - poetry install
     - poetry run pytest
-
-pre-build:
-  stage: pre-build
-  image: alpine
-  tags:
-    - walnut
-  script:
-    - if [ ! -f Dockerfile ]; then echo "Dockerfile missing!"; exit 1; fi
 
 build:
   stage: build
@@ -46,11 +38,11 @@ build:
     - walnut
   services:
     - docker:dind
-  before_script:
-    - echo "Nettoyage de REGISTRY_URL"
-    - export REGISTRY_URL=$(echo $REGISTRY_URL | sed 's|https://||' | sed 's|/$||')
   script:
-    - docker build -t $REGISTRY_URL/hello-world-ci:latest .
+    - if [ ! -f Dockerfile ]; then echo "Dockerfile is missing!"; exit 1; fi
+    - export REGISTRY_URL=$(echo "$REGISTRY_URL" | sed 's|https://||' | sed 's|/$||')
+    - echo "Using registry: $REGISTRY_URL"
+    - docker build -t "$REGISTRY_URL/hello-world-ci:latest" .
 
 deploy:
   stage: deploy
@@ -59,9 +51,6 @@ deploy:
     - walnut
   services:
     - docker:dind
-  before_script:
-    - echo "Nettoyage de REGISTRY_URL"
-    - export REGISTRY_URL=$(echo $REGISTRY_URL | sed 's|https://||' | sed 's|/$||')
   script:
-    - echo "$DOCKER_PASSWORD" | docker login "$REGISTRY_URL" -u "$DOCKER_USERNAME" --password-stdin
-    - docker push $REGISTRY_URL/hello-world-ci:latest
+    - echo "$REGISTRY_PASSWORD" | docker login "$REGISTRY_URL" -u "$REGISTRY_LOGIN" --password-stdin
+    - docker push "$REGISTRY_URL/hello-world-ci:latest"

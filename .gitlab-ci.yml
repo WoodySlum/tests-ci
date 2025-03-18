@@ -18,9 +18,9 @@ lint:
     - walnut
   before_script:
     # Authentification Docker
-    - echo "$DOCKER_USERNAME"
-    - echo "$DOCKER_PASSWORD"
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - echo "$CI_DOCKER_USERNAME"
+    - echo "$CI_DOCKER_PASSWORD"
+    - echo "$CI_DOCKER_PASSWORD" | docker login -u "$CI_DOCKER_USERNAME" --password-stdin
   script:
     - pip install poetry==$POETRY_VERSION
     - poetry install
@@ -35,7 +35,7 @@ test:
     - walnut
   before_script:
     # Authentification Docker
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - echo "$CI_DOCKER_PASSWORD" | docker login -u "$CI_DOCKER_USERNAME" --password-stdin
   script:
     - pip install poetry==$POETRY_VERSION
     - poetry install
@@ -49,7 +49,7 @@ pre-build:
     - walnut
   before_script:
     # Authentification Docker
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    - echo "$CI_DOCKER_PASSWORD" | docker login -u "$CI_DOCKER_USERNAME" --password-stdin
   script:
     - if [ ! -f Dockerfile ]; then echo "Dockerfile missing!"; exit 1; fi
 
@@ -64,7 +64,7 @@ build:
   before_script:
     - echo "Nettoyage de REGISTRY_URL"
     - export REGISTRY_URL=$(echo $REGISTRY_URL | sed 's|https://||' | sed 's|/$||')
-    - echo "$DOCKER_PASSWORD" | docker login "$REGISTRY_URL" -u "$DOCKER_USERNAME" --password-stdin
+    - echo "$CI_DOCKER_PASSWORD" | docker login "$REGISTRY_URL" -u "$CI_DOCKER_USERNAME" --password-stdin
   script:
     - docker build -t $REGISTRY_URL/hello-world-ci:latest .
 
@@ -79,6 +79,6 @@ deploy:
   before_script:
     - echo "Nettoyage de REGISTRY_URL"
     - export REGISTRY_URL=$(echo $REGISTRY_URL | sed 's|https://||' | sed 's|/$||')
-    - echo "$DOCKER_PASSWORD" | docker login "$REGISTRY_URL" -u "$DOCKER_USERNAME" --password-stdin
+    - echo "$CI_DOCKER_PASSWORD" | docker login "$REGISTRY_URL" -u "$CI_DOCKER_USERNAME" --password-stdin
   script:
     - docker push $REGISTRY_URL/hello-world-ci:latest

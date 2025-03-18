@@ -9,6 +9,13 @@ variables:
   DOCKER_IMAGE: "docker:20.10.24"
   POETRY_VERSION: 1.8.2  # Remplace par la version correcte
 
+debug-vars:
+  stage: test
+  image: alpine
+  script:
+    - echo "CI_DOCKER_USERNAME=$CI_DOCKER_USERNAME"
+    - echo "CI_DOCKER_PASSWORD (masqué)=${#CI_DOCKER_PASSWORD} caractères"
+    
 before_script:
   - echo "$CI_DOCKER_PASSWORD" | docker login docker.io --username "$CI_DOCKER_USERNAME" --password-stdin
 

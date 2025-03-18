@@ -15,7 +15,7 @@ before_script:
 # Job Lint
 lint:
   stage: lint
-  image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
+  image: python:3.10
   tags:
     - walnut
   script:
@@ -27,7 +27,7 @@ lint:
 # Job Test
 test:
   stage: test
-  image: docker:19.03.12  # Utilisation d'une image avec Docker préinstallé
+  image: python:3.10
   tags:
     - walnut
   script:

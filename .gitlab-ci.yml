@@ -13,6 +13,8 @@ variables:
 lint:
   stage: lint
   image: python:3.10
+  tags:
+    - walnut
   script:
     - pip install poetry==$POETRY_VERSION
     - poetry install
@@ -22,6 +24,8 @@ lint:
 test:
   stage: test
   image: python:3.10
+  tags:
+    - walnut
   script:
     - pip install poetry==$POETRY_VERSION
     - poetry install
@@ -30,12 +34,16 @@ test:
 pre-build:
   stage: pre-build
   image: alpine
+  tags:
+    - walnut
   script:
     - if [ ! -f Dockerfile ]; then echo "Dockerfile missing!"; exit 1; fi
 
 build:
   stage: build
   image: docker:latest
+  tags:
+    - walnut
   services:
     - docker:dind
   before_script:
@@ -47,6 +55,8 @@ build:
 deploy:
   stage: deploy
   image: docker:latest
+  tags:
+    - walnut
   services:
     - docker:dind
   before_script:

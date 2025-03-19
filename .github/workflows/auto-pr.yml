@@ -24,3 +24,4 @@ jobs:
           branch: ${{ github.ref }}
           base: master  # Remplacez par 'master' si c'est votre branche principale
           draft: false  # Changez à true si vous voulez créer un brouillon de PR
+

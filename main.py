@@ -3,8 +3,8 @@ Main module for the Hello World program.
 """
 
 
-def hello(): 
-    """Returns a simple greeting"""
+def hello():
+    """Returns a simple greeting."""
     return "Hello, worlds!"
 
 

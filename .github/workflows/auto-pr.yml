@@ -36,7 +36,7 @@ jobs:
           title: "Auto PR: ${{ github.ref_name }}"
           body: |
             This is an automated pull request created from the branch `${{ github.ref_name }}`.
-          branch: ${{ github.ref_name }}
-          base: master
+          base: ${{ github.ref_name }}
+          branch: master
           draft: false
           

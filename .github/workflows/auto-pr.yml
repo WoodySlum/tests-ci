@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - '*'         # Déclenche le workflow pour toutes les branches
-      - '!master'   # Exclut la branche principale (master)
+      - '!master'     # Exclut la branche principale (main ou master)
 
 jobs:
   create-pull-request:
@@ -13,38 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Download GitHub CLI
-        run: |
-          curl -fsSL https://github.com/cli/cli/releases/download/v2.36.0/gh_2.36.0_linux_amd64.tar.gz -o gh.tar.gz
-          tar xvf gh.tar.gz
-          sudo mv gh_2.36.0_linux_amd64/bin/gh /usr/local/bin/
-
-      - name: Extract branch name
-        id: extract_branch
-        run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-
-      - name: Check for existing PR
-        id: check_pr
-        env:
-          GH_TOKEN: ${{ secrets.GHUB_TOKEN }}
-        run: |
-          echo "Authenticating with GitHub CLI..."
-          gh auth login --with-token <<< "${GH_TOKEN}"
-          PR_TITLE="Auto PR: ${{ env.branch }}"
-          echo "Checking for existing PR with title: $PR_TITLE"
-          PR_EXISTS=$(gh pr list --json title -q ".[].title" 2>/dev/null | grep -c "\"$PR_TITLE\"")
-          echo "PR_EXISTS=$PR_EXISTS" >> $GITHUB_ENV
-          echo "PR_EXISTS: $PR_EXISTS"
-
       - name: Create Pull Request
-        if: env.PR_EXISTS == 0
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GHUB_TOKEN }}
-          commit-message: "Auto PR from branch ${{ env.branch }}"
-          title: "Auto PR: ${{ env.branch }}"
+          commit-message: "Auto PR from branch {{ branch }}"
+          title: "Auto PR: {{ branch }}"
           body: |
-            This is an automated pull request created from the branch `${{ env.branch }}`.
-          branch: ${{ env.branch }}
-          base: master  # Remplacez par 'main' si c'est votre branche principale
+            This is an automated pull request created from the branch `{{ branch }}`.
+          branch: ${{ github.ref }}
+          base: master  # Remplacez par 'master' si c'est votre branche principale
           draft: false  # Changez à true si vous voulez créer un brouillon de PR

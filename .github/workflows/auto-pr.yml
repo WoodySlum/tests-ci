@@ -3,8 +3,8 @@ name: Auto Create Pull Request
 on:
   push:
     branches:
-      - '*'         # Déclenche le workflow pour toutes les branches
-      - '!master'   # Exclut la branche principale (master)
+      - '*'         # Triggers the workflow for all branches
+      - '!master'   # Excludes the main branch (master)
 
 jobs:
   create-pull-request:
@@ -20,7 +20,7 @@ jobs:
       - name: Check for existing PR
         id: check_pr
         env:
-          GH_TOKEN: ${{ secrets.GHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Corrected secret key name
         run: |
           PR_TITLE="Auto PR: ${{ env.branch }}"
           PR_EXISTS=$(gh pr list --json title -q ".[].title" | grep -c "\"$PR_TITLE\"")
@@ -30,11 +30,11 @@ jobs:
         if: env.PR_EXISTS == 0
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}  # Corrected secret key name
           commit-message: "Auto PR from branch ${{ env.branch }}"
           title: "Auto PR: ${{ env.branch }}"
           body: |
             This is an automated pull request created from the branch `${{ env.branch }}`.
           branch: ${{ env.branch }}
-          base: master  # Remplacez par 'main' si c'est votre branche principale
-          draft: false  # Changez à true si vous voulez créer un brouillon de PR
+          base: master  # Replace with 'main' if that's your main branch
+          draft: false  # Change to true if you want to create a draft PR

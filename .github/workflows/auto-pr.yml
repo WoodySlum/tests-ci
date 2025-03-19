@@ -16,7 +16,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GHUB_TOKEN }}
           commit-message: "Auto PR from branch {{ branch }}"
           title: "Auto PR: {{ branch }}"
           body: |

@@ -1,0 +1,26 @@
+name: Auto Create Pull Request
+
+on:
+  push:
+    branches:
+      - '*'         # Déclenche le workflow pour toutes les branches
+      - '!master'     # Exclut la branche principale (main ou master)
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Auto PR from branch {{ branch }}"
+          title: "Auto PR: {{ branch }}"
+          body: |
+            This is an automated pull request created from the branch `{{ branch }}`.
+          branch: ${{ github.ref }}
+          base: main  # Remplacez par 'master' si c'est votre branche principale
+          draft: false  # Changez à true si vous voulez créer un brouillon de PR

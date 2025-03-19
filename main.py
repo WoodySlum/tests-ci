@@ -2,7 +2,7 @@
 Main module for the Hello World program.
 """
 
-anissue
+
 def hello():
     """Returns a simple greeting."""
     return "Hello, world!"

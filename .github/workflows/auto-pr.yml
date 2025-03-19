@@ -1,42 +1,22 @@
-name: Auto Create Pull Request
+name: Automatically create / update pull request
 
+# run this workflow only on new feature branches, not when they're merged to main
 on:
   push:
-    branches:
-      - '*'         # Triggers the workflow for all branches
-      - '!master'   # Excludes the master branch
+    branches-ignore:
+      - "master"
 
 jobs:
-  create-pull-request:
+  create_pr_repo_sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Check if PR exists
-        id: check_pr
-        run: |
-          BRANCH_NAME=$(echo "${{ github.ref }}" | sed 's|refs/heads/||')
-          PR_EXISTS=$(gh pr list --head "$BRANCH_NAME" --base master --state open --json number --jq '. | length')
-          if [[ "$PR_EXISTS" -gt 0 ]]; then
-            echo "PR already exists for branch $BRANCH_NAME"
-            echo "pr_exists=true" >> $GITHUB_ENV
-          else
-            echo "pr_exists=false" >> $GITHUB_ENV
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
-
-      - name: Create Pull Request
-        if: env.pr_exists == 'false'
-        uses: peter-evans/create-pull-request@v5
+      - uses: actions/checkout@v3
+      - name: Create pull request
+        id: open-pr
+        uses: repo-sync/pull-request@v2
         with:
-          token: ${{ secrets.GHUB_TOKEN }}
-          commit-message: "Auto PR from branch ${{ github.ref_name }}"
-          title: "Auto PR: ${{ github.ref_name }}"
-          body: |
-            This is an automated pull request created from the branch `${{ github.ref_name }}`.
-          base: master
-          branch: ${{ github.ref_name }}
-          draft: false
-          delete-branch: false
+          destination_branch: "master"
+          pr_title: "feat: PLACEHOLDER TITLE"
+          pr_template: ".github/PULL_REQUEST_TEMPLATE.md"
+          pr_reviewer: "paigen11"
+          pr_draft: true

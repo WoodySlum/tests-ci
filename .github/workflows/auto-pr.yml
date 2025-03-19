@@ -1,0 +1,42 @@
+name: Auto Create Pull Request
+
+on:
+  push:
+    branches:
+      - '*'         # Déclenche le workflow pour toutes les branches
+      - '!master'   # Exclut la branche principale
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check if PR exists
+        id: check_pr
+        run: |
+          BRANCH_NAME=$(echo "${{ github.ref }}" | sed 's|refs/heads/||')
+          PR_EXISTS=$(gh pr list --head "$BRANCH_NAME" --base master --state open --json number --jq '. | length')
+          if [[ "$PR_EXISTS" -gt 0 ]]; then
+            echo "PR already exists for branch $BRANCH_NAME"
+            echo "pr_exists=true" >> $GITHUB_ENV
+          else
+            echo "pr_exists=false" >> $GITHUB_ENV
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
+
+      - name: Create Pull Request
+        if: env.pr_exists == 'false'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GHUB_TOKEN }}
+          commit-message: "Auto PR from branch ${{ github.ref_name }}"
+          title: "Auto PR: ${{ github.ref_name }}"
+          body: |
+            This is an automated pull request created from the branch `${{ github.ref_name }}`.
+          branch: ${{ github.ref_name }}
+          base: master
+          draft: false
+          

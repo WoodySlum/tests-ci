@@ -55,7 +55,7 @@ build:
   before_script:
     - echo "Nettoyage de REGISTRY_URL"
     - export REGISTRY_URL=$(echo $REGISTRY_URL | sed 's|https://||' | sed 's|/$||')
-    - echo "$CI_DOCKER_PASSWORD" | docker login "$REGISTRY_URL" -u "$CI_DOCKER_USERNAME" --password-stdin
+    - echo "$REGISTRY_PASSWORD" | docker login "$REGISTRY_URL" -u "$REGISTRY_LOGIN" --password-stdin
   script:
     - docker build -t $REGISTRY_URL/hello-world-ci:latest .
 
@@ -70,6 +70,6 @@ deploy:
   before_script:
     - echo "Nettoyage de REGISTRY_URL"
     - export REGISTRY_URL=$(echo $REGISTRY_URL | sed 's|https://||' | sed 's|/$||')
-    - echo "$CI_DOCKER_PASSWORD" | docker login "$REGISTRY_URL" -u "$CI_DOCKER_USERNAME" --password-stdin
+    - echo "$REGISTRY_PASSWORD" | docker login "$REGISTRY_URL" -u "$REGISTRY_LOGIN" --password-stdin
   script:
     - docker push $REGISTRY_URL/hello-world-ci:latest

@@ -4,7 +4,7 @@ Main module for the Hello World program.
 
 
 def hello():
-    """Returns a simple greeting."""
+    """Returns a simple greeting foo."""
     return "Hello, world!"
 
 

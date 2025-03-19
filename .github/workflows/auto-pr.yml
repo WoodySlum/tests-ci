@@ -39,4 +39,5 @@ jobs:
           base: ${{ github.ref_name }}
           branch: master
           draft: false
+          delete-branch: false
           

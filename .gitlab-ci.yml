@@ -51,7 +51,9 @@ build:
   tags:
     - walnut
   services:
-    - docker:dind
+    - name: docker:dind
+      command: ["--tls=false"]
+      pull_policy: [ "if-not-present" ]
   before_script:
     - echo "Nettoyage de REGISTRY_URL"
     - export REGISTRY_URL=$(echo $REGISTRY_URL | sed 's|https://||' | sed 's|/$||')
@@ -66,7 +68,9 @@ deploy:
   tags:
     - walnut
   services:
-    - docker:dind
+    - name: docker:dind
+      command: ["--tls=false"]
+      pull_policy: [ "if-not-present" ]
   before_script:
     - echo "Nettoyage de REGISTRY_URL"
     - export REGISTRY_URL=$(echo $REGISTRY_URL | sed 's|https://||' | sed 's|/$||')

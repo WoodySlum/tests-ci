@@ -3,8 +3,8 @@ name: Auto Create Pull Request
 on:
   push:
     branches:
-      - '*'         # Déclenche le workflow pour toutes les branches
-      - '!master'   # Exclut la branche principale
+      - '*'         # Triggers the workflow for all branches
+      - '!master'   # Excludes the master branch
 
 jobs:
   create-pull-request:
@@ -36,8 +36,7 @@ jobs:
           title: "Auto PR: ${{ github.ref_name }}"
           body: |
             This is an automated pull request created from the branch `${{ github.ref_name }}`.
-          base: ${{ github.ref_name }}
-          branch: master
+          base: master
+          branch: ${{ github.ref_name }}
           draft: false
           delete-branch: false
-          

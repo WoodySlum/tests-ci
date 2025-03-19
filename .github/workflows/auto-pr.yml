@@ -26,7 +26,7 @@ jobs:
       - name: Check for existing PR
         id: check_pr
         env:
-          GH_TOKEN: ${{ secrets.GHUB_TOKEN }}
+          GHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
         run: |
           PR_TITLE="Auto PR: ${{ env.branch }}"
           PR_EXISTS=$(gh pr list --json title -q ".[].title" 2>/dev/null | grep -c "\"$PR_TITLE\"")

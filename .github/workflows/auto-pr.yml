@@ -20,6 +20,9 @@ jobs:
       - name: Install GitHub CLI
         run: sudo apt-get install gh -y
 
+      - name: Verify GitHub CLI
+        run: gh --version
+
       - name: Check for existing PR
         id: check_pr
         env:

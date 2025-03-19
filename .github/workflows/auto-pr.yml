@@ -22,5 +22,5 @@ jobs:
           body: |
             This is an automated pull request created from the branch `{{ branch }}`.
           branch: ${{ github.ref }}
-          base: main  # Remplacez par 'master' si c'est votre branche principale
+          base: master  # Remplacez par 'master' si c'est votre branche principale
           draft: false  # Changez à true si vous voulez créer un brouillon de PR

@@ -3,8 +3,8 @@ name: Auto Create Pull Request
 on:
   push:
     branches:
-      - '*'         # Triggers the workflow for all branches
-      - '!master'   # Excludes the main branch (master)
+      - '*'         # Déclenche le workflow pour toutes les branches
+      - '!master'   # Exclut la branche principale (master)
 
 jobs:
   create-pull-request:
@@ -13,20 +13,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          sudo apt-add-repository https://cli.github.com/packages
+          sudo apt-get update
+          sudo apt-get install gh -y
+
       - name: Extract branch name
         id: extract_branch
         run: echo "branch=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
-      - name: Install GitHub CLI
-        run: sudo apt-get install gh -y
-
-      - name: Verify GitHub CLI
-        run: gh --version
-
       - name: Check for existing PR
         id: check_pr
         env:
-          GHUB_TOKEN: ${{ secrets.GHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GHUB_TOKEN }}
         run: |
           PR_TITLE="Auto PR: ${{ env.branch }}"
           PR_EXISTS=$(gh pr list --json title -q ".[].title" 2>/dev/null | grep -c "\"$PR_TITLE\"")
@@ -42,5 +43,5 @@ jobs:
           body: |
             This is an automated pull request created from the branch `${{ env.branch }}`.
           branch: ${{ env.branch }}
-          base: master  # Replace with 'main' if that's your main branch
-          draft: false  # Change to true if you want to create a draft PR
+          base: master  # Remplacez par 'main' si c'est votre branche principale
+          draft: false  # Changez à true si vous voulez créer un brouillon de PR

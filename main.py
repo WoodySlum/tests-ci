@@ -2,10 +2,10 @@
 Main module for the Hello World program.
 """
 
-bug
-def hello():
+
+def hello(): 
     """Returns a simple greeting"""
-    return "Hello, world!"
+    return "Hello, worlds!"
 
 
 if __name__ == "__main__":

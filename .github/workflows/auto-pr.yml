@@ -28,9 +28,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GHUB_TOKEN }}
         run: |
+          echo "Authenticating with GitHub CLI..."
+          gh auth login --with-token <<< "${GH_TOKEN}"
           PR_TITLE="Auto PR: ${{ env.branch }}"
+          echo "Checking for existing PR with title: $PR_TITLE"
           PR_EXISTS=$(gh pr list --json title -q ".[].title" 2>/dev/null | grep -c "\"$PR_TITLE\"")
           echo "PR_EXISTS=$PR_EXISTS" >> $GITHUB_ENV
+          echo "PR_EXISTS: $PR_EXISTS"
 
       - name: Create Pull Request
         if: env.PR_EXISTS == 0
